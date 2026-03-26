@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ragspro.com/sitemap.xml
