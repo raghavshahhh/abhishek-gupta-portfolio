@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abhishek Gupta | Flutter Engineer</title>
-    <meta name="description" content="Senior Flutter Software Engineer with 3+ years experience building high-performance mobile apps for Android & iOS. 10+ live apps shipped.">
+    <meta name="description" content="Flutter Engineer · Team Lead · 5 Years Building Apps. Building high-performance mobile apps for Android & iOS. 10+ live apps shipped, 1M+ downloads.">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Abhishek Gupta | Flutter Engineer">
-    <meta property="og:description" content="Senior Flutter Software Engineer with 3+ years experience building high-performance mobile apps.">
+    <meta property="og:description" content="Flutter Engineer · Team Lead · 5 Years Building Apps. 10+ live apps, 1M+ downloads.">
     <meta property="og:type" content="website">
 
     <!-- Google Fonts -->
@@ -23,18 +23,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
+    <!-- Lenis -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --bg-primary: #0A0A0F;
-            --bg-surface: #111118;
-            --border: #1E1E2E;
-            --primary: #7C3AED;
-            --secondary: #06B6D4;
+            --bg-primary: #030305;
+            --bg-surface: #0A0A0F;
+            --border: rgba(255, 255, 255, 0.05);
+            --primary: #8B5CF6;
+            --secondary: #0EA5E9;
             --text-primary: #F8FAFC;
-            --text-muted: #94A3B8;
+            --text-muted: #A1A1AA;
             --success: #10B981;
         }
 
@@ -44,8 +47,26 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
+        /* Lenis handles smooth scrolling, removed native behavior */
+
+        html.lenis {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto;
+        }
+
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+
+        .lenis.lenis-scrolling iframe {
+            pointer-events: none;
         }
 
         body {
@@ -75,24 +96,27 @@
 
         /* Glass effect */
         .glass {
-            background: rgba(17, 17, 24, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .glass-card {
-            background: rgba(17, 17, 24, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(10, 10, 15, 0.3);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
         .glass-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.15);
-            border-color: rgba(124, 58, 237, 0.3);
+            box-shadow: 0 24px 48px -12px rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.3);
+            background: rgba(10, 10, 15, 0.6);
         }
 
         /* Gradient text */
@@ -160,23 +184,34 @@
         }
 
         .phone-screen {
-            position: absolute;
-            inset: 8px;
-            background: linear-gradient(135deg, #1e1e2e, #12121a);
+            width: 100%;
+            height: 100%;
+            background: #000;
             border-radius: 32px;
             overflow: hidden;
+            position: relative;
         }
 
         .phone-notch {
             position: absolute;
-            top: 12px;
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 24px;
+            width: 120px;
+            height: 25px;
             background: #000;
-            border-radius: 0 0 16px 16px;
-            z-index: 10;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 20;
+        }
+
+        .app-scroll-track {
+            animation: appScroll 15s linear infinite;
+        }
+
+        @keyframes appScroll {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
         }
 
         /* Floating icons */
@@ -342,16 +377,40 @@
         /* Stats counter */
         .stat-card {
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .stat-card:hover::after {
+            left: 100%;
         }
 
         .stat-number {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--text-primary), var(--text-muted));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1;
+        }
+
+        @media (min-width: 768px) {
+            .stat-number {
+                font-size: 3.5rem;
+            }
         }
 
         /* Mobile menu */
@@ -640,14 +699,14 @@
                         <!-- Title -->
                         <div class="hero-element">
                             <p class="font-heading text-xl sm:text-2xl lg:text-3xl text-text-muted">
-                                Flutter Engineer · Team Lead · <span class="gradient-text font-semibold">10+ Live Apps</span>
+                                Flutter Engineer · Team Lead · <span class="gradient-text font-semibold">5 Years Building Apps</span>
                             </p>
                         </div>
 
                         <!-- Description -->
                         <div class="hero-element max-w-2xl">
                             <p class="text-text-muted text-lg leading-relaxed">
-                                I craft high-performance mobile experiences for Android & iOS. 3+ years shipping production apps used by real users.
+                                Started as an associate at KwikPixel, now leading Flutter teams, shipping apps to government clients with 1M+ downloads.
                             </p>
                         </div>
 
@@ -657,7 +716,7 @@
                                 View Projects
                                 <i class="fas fa-arrow-right"></i>
                             </a>
-                            <a href="#" class="btn-ghost" onclick="alert('Resume download coming soon!'); return false;">
+                            <a href="./Abhishek_Gupta_CV.pdf" download="Abhishek_Gupta_CV.pdf" class="btn-ghost" target="_blank">
                                 Download Resume
                                 <i class="fas fa-download"></i>
                             </a>
@@ -668,48 +727,95 @@
 
                         <!-- Social Links -->
                         <div class="hero-element flex gap-4 pt-6">
-                            <a href="https://github.com/abhishek-ugo" target="_blank" class="w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:bg-primary/20 transition-colors">
+                            <a href="https://github.com/abhi311098" target="_blank" class="w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:bg-primary/20 transition-colors">
                                 <i class="fab fa-github text-xl"></i>
                             </a>
-                            <a href="https://linkedin.com/in/abhishek-ugo" target="_blank" class="w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:bg-primary/20 transition-colors">
+                            <a href="https://linkedin.com/in/abhishek-gupta-2515ab157" target="_blank" class="w-12 h-12 glass rounded-full flex items-center justify-center text-white hover:bg-primary/20 transition-colors">
                                 <i class="fab fa-linkedin-in text-xl"></i>
                             </a>
                         </div>
                     </div>
 
                     <!-- Right Content - Phone Mockup -->
-                    <div class="lg:col-span-2 relative flex items-center justify-center">
-                        <div class="relative">
+                    <div class="lg:col-span-2 relative flex items-center justify-center mt-12 lg:mt-0">
+                        <div class="relative transform scale-[0.65] sm:scale-75 md:scale-90 lg:scale-100 origin-center lg:origin-left">
                             <!-- Phone Mockup -->
-                            <div class="phone-mockup">
+                            <div class="phone-mockup parallax-phone">
                                 <div class="phone-screen">
                                     <div class="phone-notch"></div>
-                                    <!-- App UI -->
-                                    <div class="h-full w-full bg-gradient-to-br from-violet-900/20 to-cyan-900/20 p-4 pt-12 flex flex-col gap-4">
-                                        <div class="glass rounded-xl p-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-sm font-bold">A</div>
-                                                <div>
-                                                    <div class="text-sm font-semibold">Amala Earth</div>
-                                                    <div class="text-xs text-text-muted">Sustainable Shopping</div>
+                                    <!-- App UI Scrolling List -->
+                                    <div class="h-full w-full bg-gradient-to-br from-violet-900/20 to-cyan-900/20 p-4 pt-12 overflow-hidden relative">
+                                        <div class="flex flex-col gap-4 app-scroll-track mt-2">
+                                            <!-- App 1 -->
+                                            <div class="glass rounded-xl p-3 transform transition-transform hover:scale-105">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-lg overflow-hidden shadow-lg border border-white/10 shrink-0 bg-[#030305]">
+                                                        <img src="https://play-lh.googleusercontent.com/Lmx3Uanu7AHwcc01igwkJ-XNafqesTY0v574yj9ynTqyKiiUPj6qpMaLl3TE6ZDyQg" alt="Amala Earth" class="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs font-semibold">Amala Earth</div>
+                                                        <div class="text-[10px] text-text-muted">Sustainable Shopping</div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="glass rounded-xl p-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-sm font-bold">I</div>
-                                                <div>
-                                                    <div class="text-sm font-semibold">IGL Connect</div>
-                                                    <div class="text-xs text-text-muted">Gas Utility</div>
+                                            <!-- App 2 -->
+                                            <div class="glass rounded-xl p-3 transform transition-transform hover:scale-105">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-lg overflow-hidden shadow-lg border border-white/10 shrink-0 bg-[#030305]">
+                                                        <img src="https://play-lh.googleusercontent.com/arbs8V4r1tFLfSQM1jtXSEJOopyuSmMHCP8SPk76U2YMolMkmI0UfcLKtyCc__Qsru1j" alt="IGL Connect" class="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs font-semibold">IGL Connect</div>
+                                                        <div class="text-[10px] text-text-muted">Gas Utility</div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="glass rounded-xl p-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-sm font-bold">F</div>
-                                                <div>
-                                                    <div class="text-sm font-semibold">FojFit</div>
-                                                    <div class="text-xs text-text-muted">Military Fitness</div>
+                                            <!-- App 3 -->
+                                            <div class="glass rounded-xl p-3 transform transition-transform hover:scale-105">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-lg overflow-hidden shadow-lg border border-white/10 shrink-0 bg-[#030305]">
+                                                        <img src="https://play-lh.googleusercontent.com/gp05o97_x6kzuS7XGiOx_3wiDfwfjpFXYECloFbKwcruk5mUW25R0Vo9rFqaxqrsYF0" alt="FojFit" class="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs font-semibold">FojFit</div>
+                                                        <div class="text-[10px] text-text-muted">Military Fitness</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- App 4 -->
+                                            <div class="glass rounded-xl p-3 transform transition-transform hover:scale-105">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-lg overflow-hidden shadow-lg border border-white/10 shrink-0 bg-[#030305]">
+                                                        <img src="https://play-lh.googleusercontent.com/Tfp02YbYMEcp_SQkk_jOzuanib9nldiyR6zW05AJwlGa_PkZXFEesK03-6XpWOg4zCk" alt="IID" class="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs font-semibold">IID</div>
+                                                        <div class="text-[10px] text-text-muted">Entrepreneurship</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- App 5 -->
+                                            <div class="glass rounded-xl p-3 transform transition-transform hover:scale-105">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-lg overflow-hidden shadow-lg border border-white/10 shrink-0 bg-[#030305]">
+                                                        <img src="https://play-lh.googleusercontent.com/ZMxaUaV-SNny3rkF7hXbTbxnZO0OgplGQak-Bt8jWFqrMbTKe-nZzJdwTkGX77xOPIM" alt="Healium" class="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs font-semibold">Healium</div>
+                                                        <div class="text-[10px] text-text-muted">Mental Wellness</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Duplicated for infinite scroll illusion -->
+                                            <div class="glass rounded-xl p-3 transform transition-transform hover:scale-105">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-lg overflow-hidden shadow-lg border border-white/10 shrink-0 bg-[#030305]">
+                                                        <img src="https://play-lh.googleusercontent.com/Lmx3Uanu7AHwcc01igwkJ-XNafqesTY0v574yj9ynTqyKiiUPj6qpMaLl3TE6ZDyQg" alt="Amala Earth" class="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs font-semibold">Amala Earth</div>
+                                                        <div class="text-[10px] text-text-muted">Sustainable Shopping</div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -753,51 +859,36 @@
 
         <!-- Stats Bar -->
         <section class="py-16 relative">
-            <div class=" px-4 sm:px-6 lg:px-12 xl:px-20">
+            <div class="px-4 sm:px-6 lg:px-12 xl:px-20">
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="glass-card rounded-2xl p-6 stat-card" data-stat="3">
-                        <div class="stat-number" data-target="3">0</div>
-                        <div class="text-text-muted mt-2">Years Experience</div>
+                    <div class="glass-card rounded-2xl p-6 stat-card" data-stat="5">
+                        <div class="text-4xl mb-3"><i class="fa-regular fa-clock text-violet-400"></i></div>
+                        <div class="stat-number" data-target="5">0</div>
+                        <div class="text-text-muted mt-2 text-sm">Years Experience</div>
+                        <div class="text-xs text-text-muted/60 mt-1">Since 2021</div>
                     </div>
                     <div class="glass-card rounded-2xl p-6 stat-card" data-stat="10">
+                        <div class="text-4xl mb-3"><i class="fa-solid fa-rocket text-cyan-400"></i></div>
                         <div class="stat-number" data-target="10">0</div>
-                        <div class="text-text-muted mt-2">Apps Shipped</div>
+                        <div class="text-text-muted mt-2 text-sm">Apps Shipped</div>
+                        <div class="text-xs text-text-muted/60 mt-1">Live on stores</div>
                     </div>
-                    <div class="glass-card rounded-2xl p-6 stat-card" data-stat="2">
-                        <div class="stat-number" data-target="2">0</div>
-                        <div class="text-text-muted mt-2">Platforms</div>
+                    <div class="glass-card rounded-2xl p-6 stat-card" data-stat="1000000">
+                        <div class="text-4xl mb-3"><i class="fa-solid fa-download text-emerald-400"></i></div>
+                        <div class="stat-number" data-target="1000000">0</div>
+                        <div class="text-text-muted mt-2 text-sm">Total Downloads</div>
+                        <div class="text-xs text-text-muted/60 mt-1">Across all apps</div>
                     </div>
                     <div class="glass-card rounded-2xl p-6 stat-card" data-stat="40">
+                        <div class="text-4xl mb-3"><i class="fa-solid fa-bolt text-yellow-400"></i></div>
                         <div class="stat-number" data-target="40">0</div>
-                        <div class="text-text-muted mt-2">% Performance Boost</div>
+                        <div class="text-text-muted mt-2 text-sm">% Performance Boost</div>
+                        <div class="text-xs text-text-muted/60 mt-1">Average improvement</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Stats Bar -->
-        <section class="py-16 relative">
-            <div class=" px-4 sm:px-6 lg:px-12 xl:px-20">
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="glass-card rounded-2xl p-6 stat-card" data-stat="3">
-                        <div class="stat-number" data-target="3">0</div>
-                        <div class="text-text-muted mt-2">Years Experience</div>
-                    </div>
-                    <div class="glass-card rounded-2xl p-6 stat-card" data-stat="10">
-                        <div class="stat-number" data-target="10">0</div>
-                        <div class="text-text-muted mt-2">Apps Shipped</div>
-                    </div>
-                    <div class="glass-card rounded-2xl p-6 stat-card" data-stat="2">
-                        <div class="stat-number" data-target="2">0</div>
-                        <div class="text-text-muted mt-2">Platforms</div>
-                    </div>
-                    <div class="glass-card rounded-2xl p-6 stat-card" data-stat="40">
-                        <div class="stat-number" data-target="40">0</div>
-                        <div class="text-text-muted mt-2">% Performance Boost</div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- About Section -->
         <section class="py-24 relative" id="about">
@@ -827,7 +918,7 @@
 
                         <div class="space-y-6 text-text-muted">
                             <p class="text-lg leading-relaxed">
-                                I'm a Senior Flutter Software Engineer based in New Delhi with 3+ years of hands-on experience building production-ready mobile applications. I've shipped 10+ apps to both Google Play Store and Apple App Store, reaching thousands of real users.
+                                I'm a Flutter Engineer based in New Delhi with 5 years of experience building production-ready mobile applications. Started as an associate at KwikPixel, now leading Flutter teams and shipping apps to government clients with 1M+ downloads.
                             </p>
                             <p class="text-lg leading-relaxed">
                                 My expertise spans the full mobile development lifecycle—from clean architecture and state management to API integration and performance optimization. I specialize in transforming complex requirements into smooth, intuitive user experiences.
@@ -840,15 +931,15 @@
                         <!-- Icon Cards -->
                         <div class="grid sm:grid-cols-3 gap-4 pt-8">
                             <div class="glass-card rounded-xl p-5 text-center">
-                                <div class="w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl">🎯</div>
+                                <div class="w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl"><i class="fa-solid fa-bullseye text-violet-400"></i></div>
                                 <div class="font-semibold text-sm">Problem Solver</div>
                             </div>
                             <div class="glass-card rounded-xl p-5 text-center">
-                                <div class="w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl">📱</div>
+                                <div class="w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl"><i class="fa-solid fa-mobile-screen-button text-cyan-400"></i></div>
                                 <div class="font-semibold text-sm">Mobile First</div>
                             </div>
                             <div class="glass-card rounded-xl p-5 text-center">
-                                <div class="w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl">🤝</div>
+                                <div class="w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl"><i class="fa-solid fa-handshake text-emerald-400"></i></div>
                                 <div class="font-semibold text-sm">Team Leader</div>
                             </div>
                         </div>
@@ -891,15 +982,15 @@
                                     <p class="font-mono text-sm text-text-muted mb-4">Jan 2023 – Present</p>
                                     <ul class="space-y-2 text-text-muted text-sm">
                                         <li class="flex items-start gap-2 md:justify-end">
-                                            <span>Led team of Flutter developers delivering Android & iOS apps</span>
+                                            <span>Managing a team of Flutter developers for client projects</span>
                                             <span class="text-primary mt-1">•</span>
                                         </li>
                                         <li class="flex items-start gap-2 md:justify-end">
-                                            <span>Mentored juniors in state management, clean code & best practices</span>
+                                            <span>Mentoring junior devs on state management & clean architecture</span>
                                             <span class="text-primary mt-1">•</span>
                                         </li>
                                         <li class="flex items-start gap-2 md:justify-end">
-                                            <span>Shipped complex Agile projects across design, dev & QA teams</span>
+                                            <span>Delivering enterprise apps for government and private clients</span>
                                             <span class="text-primary mt-1">•</span>
                                         </li>
                                     </ul>
@@ -920,11 +1011,11 @@
                                     <ul class="space-y-2 text-text-muted text-sm">
                                         <li class="flex items-start gap-2">
                                             <span class="text-secondary mt-1">•</span>
-                                            <span>Served as Associate Team Lead on Flutter project</span>
+                                            <span>First time managing delivery end-to-end from design to deployment</span>
                                         </li>
                                         <li class="flex items-start gap-2">
                                             <span class="text-secondary mt-1">•</span>
-                                            <span>Optimized codebase achieving 20% performance improvement</span>
+                                            <span>20% performance improvement through code optimization & architecture fixes</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -941,15 +1032,15 @@
                                     <p class="font-mono text-sm text-text-muted mb-4">Jan 2021 – May 2022</p>
                                     <ul class="space-y-2 text-text-muted text-sm">
                                         <li class="flex items-start gap-2 md:justify-end">
-                                            <span>Reduced app loading time by 40% with optimized Dart architecture</span>
+                                            <span>Cut app loading time by 40% with Smart DB Architecture</span>
                                             <span class="text-primary mt-1">•</span>
                                         </li>
                                         <li class="flex items-start gap-2 md:justify-end">
-                                            <span>Translated UI/UX designs into pixel-perfect Flutter widgets</span>
+                                            <span>Built pixel-perfect UIs from Figma designs</span>
                                             <span class="text-primary mt-1">•</span>
                                         </li>
                                         <li class="flex items-start gap-2 md:justify-end">
-                                            <span>Integrated REST APIs and backend services end-to-end</span>
+                                            <span>Shipped real apps to Play Store & App Store</span>
                                             <span class="text-primary mt-1">•</span>
                                         </li>
                                     </ul>
@@ -975,23 +1066,26 @@
                     <!-- Project 1: IGL Connect -->
                     <div class="project-card glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-xl font-bold text-white">I</div>
+                            <div class="w-14 h-14 rounded-xl overflow-hidden shadow-xl border border-white/10 shrink-0 bg-[#030305]">
+                                <img src="https://play-lh.googleusercontent.com/arbs8V4r1tFLfSQM1jtXSEJOopyuSmMHCP8SPk76U2YMolMkmI0UfcLKtyCc__Qsru1j" alt="IGL Connect" class="w-full h-full object-cover" />
+                            </div>
                             <div>
                                 <h3 class="font-heading font-bold text-xl">IGL Connect</h3>
                                 <div class="flex gap-2 mt-1">
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400">Android</span>
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-400">iOS</span>
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-amber-500/20 text-amber-400">Gov't Client</span>
                                 </div>
                             </div>
                         </div>
                         <p class="text-text-muted text-sm mb-6 leading-relaxed">
-                            Official gas utility customer app for Indraprastha Gas Limited. Features bill payments, complaint registration, and real-time service tracking.
+                            Official app for Indraprastha Gas — a GAIL + BPCL joint venture backed by the Government of India. 1M+ downloads, 28K+ reviews.
                         </p>
                         <div class="flex gap-3">
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
+                            <a href="https://play.google.com/store/apps/details?id=com.CustomerApp" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
                                 <i class="fab fa-google-play mr-1"></i> Play Store
                             </a>
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
+                            <a href="https://apps.apple.com/in/app/igl-connect/id1147477099" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
                                 <i class="fab fa-apple mr-1"></i> App Store
                             </a>
                         </div>
@@ -1000,23 +1094,26 @@
                     <!-- Project 2: FojFit -->
                     <div class="project-card glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-xl font-bold text-white">F</div>
+                            <div class="w-14 h-14 rounded-xl overflow-hidden shadow-xl border border-white/10 shrink-0 bg-[#030305]">
+                                <img src="https://play-lh.googleusercontent.com/gp05o97_x6kzuS7XGiOx_3wiDfwfjpFXYECloFbKwcruk5mUW25R0Vo9rFqaxqrsYF0" alt="FojFit" class="w-full h-full object-cover" />
+                            </div>
                             <div>
                                 <h3 class="font-heading font-bold text-xl">FojFit</h3>
                                 <div class="flex gap-2 mt-1">
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400">Android</span>
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-400">iOS</span>
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-400">Defence</span>
                                 </div>
                             </div>
                         </div>
                         <p class="text-text-muted text-sm mb-6 leading-relaxed">
-                            Military-grade fitness training platform for armed forces aspirants. Includes workout plans, diet tracking, and performance analytics.
+                            India's first defence fitness app — built for NDA, CDS & AFCAT aspirants. Personalised diet, HD workout videos, army-grade training routines.
                         </p>
                         <div class="flex gap-3">
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
+                            <a href="https://play.google.com/store/apps/details?id=com.fitnessapp.fitness_app&hl=en&gl=US" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
                                 <i class="fab fa-google-play mr-1"></i> Play Store
                             </a>
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
+                            <a href="https://apps.apple.com/in/app/fojfit/id1628305162" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
                                 <i class="fab fa-apple mr-1"></i> App Store
                             </a>
                         </div>
@@ -1025,23 +1122,26 @@
                     <!-- Project 3: Amala Earth -->
                     <div class="project-card glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center text-xl font-bold text-white">A</div>
+                            <div class="w-14 h-14 rounded-xl overflow-hidden shadow-xl border border-white/10 shrink-0 bg-[#030305]">
+                                <img src="https://play-lh.googleusercontent.com/Lmx3Uanu7AHwcc01igwkJ-XNafqesTY0v574yj9ynTqyKiiUPj6qpMaLl3TE6ZDyQg" alt="Amala Earth" class="w-full h-full object-cover" />
+                            </div>
                             <div>
                                 <h3 class="font-heading font-bold text-xl">Amala Earth</h3>
                                 <div class="flex gap-2 mt-1">
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400">Android</span>
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-400">iOS</span>
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-violet-500/20 text-violet-400">500K+ DLs</span>
                                 </div>
                             </div>
                         </div>
                         <p class="text-text-muted text-sm mb-6 leading-relaxed">
-                            Sustainable lifestyle and eco-friendly shopping platform. Connects conscious consumers with verified green brands and products.
+                            Full shopping app with 60,000+ products from 400+ homegrown Indian brands — organic food, clean beauty, sustainable fashion.
                         </p>
                         <div class="flex gap-3">
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
+                            <a href="https://play.google.com/store/apps/details?id=com.amala.earth&hl=en_AU&gl=US" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
                                 <i class="fab fa-google-play mr-1"></i> Play Store
                             </a>
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
+                            <a href="https://apps.apple.com/in/app/amala-earth-online-shopping/id1591399697" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
                                 <i class="fab fa-apple mr-1"></i> App Store
                             </a>
                         </div>
@@ -1050,23 +1150,26 @@
                     <!-- Project 4: IID -->
                     <div class="project-card glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center text-xl font-bold text-white">I</div>
+                            <div class="w-14 h-14 rounded-xl overflow-hidden shadow-xl border border-white/10 shrink-0 bg-[#030305]">
+                                <img src="https://play-lh.googleusercontent.com/Tfp02YbYMEcp_SQkk_jOzuanib9nldiyR6zW05AJwlGa_PkZXFEesK03-6XpWOg4zCk" alt="IID" class="w-full h-full object-cover" />
+                            </div>
                             <div>
                                 <h3 class="font-heading font-bold text-xl">IID</h3>
                                 <div class="flex gap-2 mt-1">
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400">Android</span>
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-400">iOS</span>
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-rose-500/20 text-rose-400">v2.2.2</span>
                                 </div>
                             </div>
                         </div>
                         <p class="text-text-muted text-sm mb-6 leading-relaxed">
-                            Identity and document management solution. Secure digital vault for important documents with OCR scanning and cloud backup features.
+                            Entrepreneurship platform for first-generation founders — live workshops, expert seminars. v2.2.2 shipped October 2025.
                         </p>
                         <div class="flex gap-3">
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
+                            <a href="https://play.google.com/store/apps/details?id=com.iid" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
                                 <i class="fab fa-google-play mr-1"></i> Play Store
                             </a>
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
+                            <a href="https://apps.apple.com/in/app/iid/id1526146453" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
                                 <i class="fab fa-apple mr-1"></i> App Store
                             </a>
                         </div>
@@ -1075,23 +1178,26 @@
                     <!-- Project 5: Healium -->
                     <div class="project-card glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-xl font-bold text-white">H</div>
+                            <div class="w-14 h-14 rounded-xl overflow-hidden shadow-xl border border-white/10 shrink-0 bg-[#030305]">
+                                <img src="https://play-lh.googleusercontent.com/ZMxaUaV-SNny3rkF7hXbTbxnZO0OgplGQak-Bt8jWFqrMbTKe-nZzJdwTkGX77xOPIM" alt="Healium" class="w-full h-full object-cover" />
+                            </div>
                             <div>
                                 <h3 class="font-heading font-bold text-xl">Healium</h3>
                                 <div class="flex gap-2 mt-1">
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-green-500/20 text-green-400">Android</span>
                                     <span class="px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-400">iOS</span>
+                                    <span class="px-2 py-0.5 text-xs rounded-full bg-cyan-500/20 text-cyan-400">CTIA Award</span>
                                 </div>
                             </div>
                         </div>
                         <p class="text-text-muted text-sm mb-6 leading-relaxed">
-                            Health and wellness tracking platform with AI-powered insights. Monitors vitals, sleep patterns, and provides personalized recommendations.
+                            Biofeedback wellness app with CTIA Wireless Innovation Award. Used by veterans and healthcare professionals in the US.
                         </p>
                         <div class="flex gap-3">
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
+                            <a href="https://play.google.com/store/apps/details?id=com.storyup.healiumxr" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-green-600/20 text-green-400 text-sm font-medium hover:bg-green-600/30 transition-colors">
                                 <i class="fab fa-google-play mr-1"></i> Play Store
                             </a>
-                            <a href="#" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
+                            <a href="https://apps.apple.com/in/app/healium-camps/id6474176316" target="_blank" class="flex-1 text-center py-2 rounded-lg bg-blue-600/20 text-blue-400 text-sm font-medium hover:bg-blue-600/30 transition-colors">
                                 <i class="fab fa-apple mr-1"></i> App Store
                             </a>
                         </div>
@@ -1117,65 +1223,99 @@
                 <div class="text-center mb-16">
                     <div class="section-label mb-4">// tech arsenal</div>
                     <h2 class="text-4xl lg:text-5xl font-heading font-bold">Tools I <span class="gradient-text">Wield</span></h2>
+                    <p class="text-text-muted mt-4 text-lg">The full stack I use to ship production-grade Flutter apps.</p>
                 </div>
 
-                <div class="max-w-5xl mx-auto space-y-10">
-                    <!-- Mobile -->
-                    <div>
-                        <h3 class="font-heading font-semibold text-lg mb-6 flex items-center gap-2">
-                            <span class="text-2xl">📱</span> Mobile
-                        </h3>
-                        <div class="flex flex-wrap gap-3">
-                            <span class="skill-tag"><i class="fab fa-flutter text-cyan-400"></i> Flutter</span>
-                            <span class="skill-tag"><i class="fas fa-code text-blue-400"></i> Dart</span>
-                            <span class="skill-tag"><i class="fab fa-kotlin text-purple-400"></i> Kotlin</span>
-                            <span class="skill-tag"><i class="fab fa-apple text-white"></i> Swift</span>
-                            <span class="skill-tag"><i class="fab fa-android text-green-400"></i> Android SDK</span>
-                            <span class="skill-tag"><i class="fab fa-apple text-blue-400"></i> iOS SDK</span>
+                <!-- Tech Logo Grid -->
+                <div class="max-w-5xl mx-auto">
+
+                    <!-- Category: Mobile Core -->
+                    <div class="mb-12">
+                        <div class="flex items-center gap-3 mb-7">
+                            <div class="h-px flex-1 bg-gradient-to-r from-transparent to-violet-500/30"></div>
+                            <span class="text-xs font-mono text-text-muted uppercase tracking-widest">Mobile Core</span>
+                            <div class="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-500/30"></div>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-6">
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Flutter">
+                                <span class="text-xs font-mono text-text-muted">Flutter</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Dart">
+                                <span class="text-xs font-mono text-text-muted">Dart</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Kotlin">
+                                <span class="text-xs font-mono text-text-muted">Kotlin</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Swift">
+                                <span class="text-xs font-mono text-text-muted">Swift</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Android">
+                                <span class="text-xs font-mono text-text-muted">Android</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/xcode/xcode-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Xcode">
+                                <span class="text-xs font-mono text-text-muted">Xcode</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Web -->
-                    <div>
-                        <h3 class="font-heading font-semibold text-lg mb-6 flex items-center gap-2">
-                            <span class="text-2xl">🌐</span> Web
-                        </h3>
-                        <div class="flex flex-wrap gap-3">
-                            <span class="skill-tag"><i class="fab fa-html5 text-orange-400"></i> HTML</span>
-                            <span class="skill-tag"><i class="fab fa-css3-alt text-blue-400"></i> CSS</span>
-                            <span class="skill-tag"><i class="fab fa-js text-yellow-400"></i> JavaScript</span>
-                            <span class="skill-tag"><i class="fas fa-database text-cyan-400"></i> MySQL</span>
+                    <!-- Category: Architecture & State -->
+                    <div class="mb-12">
+                        <div class="flex items-center gap-3 mb-7">
+                            <div class="h-px flex-1 bg-gradient-to-r from-transparent to-violet-500/30"></div>
+                            <span class="text-xs font-mono text-text-muted uppercase tracking-widest">Architecture & State</span>
+                            <div class="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-500/30"></div>
                         </div>
-                    </div>
-
-                    <!-- Architecture -->
-                    <div>
-                        <h3 class="font-heading font-semibold text-lg mb-6 flex items-center gap-2">
-                            <span class="text-2xl">⚙️</span> Architecture
-                        </h3>
-                        <div class="flex flex-wrap gap-3">
+                        <div class="flex flex-wrap justify-center gap-3">
                             <span class="skill-tag"><i class="fas fa-cubes text-violet-400"></i> BLoC</span>
                             <span class="skill-tag"><i class="fas fa-layer-group text-cyan-400"></i> GetX</span>
                             <span class="skill-tag"><i class="fas fa-plug text-green-400"></i> Provider</span>
                             <span class="skill-tag"><i class="fas fa-sitemap text-pink-400"></i> Clean Architecture</span>
-                            <span class="skill-tag"><i class="fas fa-exchange-alt text-yellow-400"></i> State Management</span>
+                            <span class="skill-tag"><i class="fas fa-exchange-alt text-yellow-400"></i> MVVM</span>
+                            <span class="skill-tag"><i class="fas fa-code-branch text-orange-400"></i> Repository Pattern</span>
                         </div>
                     </div>
 
-                    <!-- Tools -->
-                    <div>
-                        <h3 class="font-heading font-semibold text-lg mb-6 flex items-center gap-2">
-                            <span class="text-2xl">🔧</span> Tools
-                        </h3>
-                        <div class="flex flex-wrap gap-3">
-                            <span class="skill-tag"><i class="fab fa-github text-white"></i> GitHub</span>
-                            <span class="skill-tag"><i class="fab fa-bitbucket text-blue-400"></i> Bitbucket</span>
-                            <span class="skill-tag"><i class="fas fa-cloud text-orange-400"></i> REST APIs</span>
-                            <span class="skill-tag"><i class="fas fa-code text-green-400"></i> JSON Parsing</span>
-                            <span class="skill-tag"><i class="fas fa-project-diagram text-purple-400"></i> Firebase</span>
-                            <span class="skill-tag"><i class="fas fa-bug text-red-400"></i> CI/CD</span>
+                    <!-- Category: Backend & Tools -->
+                    <div class="mb-12">
+                        <div class="flex items-center gap-3 mb-7">
+                            <div class="h-px flex-1 bg-gradient-to-r from-transparent to-violet-500/30"></div>
+                            <span class="text-xs font-mono text-text-muted uppercase tracking-widest">Backend & Tools</span>
+                            <div class="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-500/30"></div>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-6">
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Firebase">
+                                <span class="text-xs font-mono text-text-muted">Firebase</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="GitHub" style="filter:invert(1)">
+                                <span class="text-xs font-mono text-text-muted">GitHub</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jira/jira-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Jira">
+                                <span class="text-xs font-mono text-text-muted">Jira</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Figma">
+                                <span class="text-xs font-mono text-text-muted">Figma</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="Postman">
+                                <span class="text-xs font-mono text-text-muted">Postman</span>
+                            </div>
+                            <div class="tech-logo group glass-card rounded-2xl p-5 flex flex-col items-center gap-3 w-28 cursor-default">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" class="w-10 h-10 transition-transform duration-300 group-hover:scale-125" alt="MySQL">
+                                <span class="text-xs font-mono text-text-muted">MySQL</span>
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -1194,12 +1334,12 @@
                             <div class="text-text-muted text-sm mt-2">App Store Apps</div>
                         </div>
                         <div>
-                            <div class="text-3xl md:text-4xl font-heading font-bold gradient-text">3</div>
+                            <div class="text-3xl md:text-4xl font-heading font-bold gradient-text">5</div>
                             <div class="text-text-muted text-sm mt-2">Companies</div>
                         </div>
                         <div>
                             <div class="text-3xl md:text-4xl font-heading font-bold gradient-text">3+</div>
-                            <div class="text-text-muted text-sm mt-2">Years Active</div>
+                            <div class="text-text-muted text-sm mt-2">Years Experience</div>
                         </div>
                     </div>
                 </div>
@@ -1221,17 +1361,17 @@
                     <!-- Contact Cards -->
                     <div class="grid md:grid-cols-3 gap-6 mb-12">
                         <div class="glass-card rounded-xl p-6 text-center cursor-pointer hover:scale-105 transition-transform" onclick="copyEmail()">
-                            <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl">📧</div>
+                            <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl"><i class="fa-regular fa-envelope text-violet-400"></i></div>
                             <h3 class="font-semibold mb-1">Email</h3>
                             <p class="text-text-muted text-sm break-all">abhishek.gupta.890113@gmail.com</p>
                         </div>
                         <a href="tel:+919958484437" class="glass-card rounded-xl p-6 text-center hover:scale-105 transition-transform">
-                            <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl">📞</div>
+                            <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl"><i class="fa-solid fa-phone text-cyan-400"></i></div>
                             <h3 class="font-semibold mb-1">Phone</h3>
                             <p class="text-text-muted text-sm">+91-99584-84437</p>
                         </a>
                         <div class="glass-card rounded-xl p-6 text-center">
-                            <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl">📍</div>
+                            <div class="w-14 h-14 mx-auto mb-4 rounded-xl bg-gradient-to-br from-violet-500/20 to-cyan-500/20 flex items-center justify-center text-2xl"><i class="fa-solid fa-location-dot text-emerald-400"></i></div>
                             <h3 class="font-semibold mb-1">Location</h3>
                             <p class="text-text-muted text-sm">New Delhi, India</p>
                         </div>
@@ -1252,17 +1392,17 @@
         <div class="px-4 sm:px-6 lg:px-12 xl:px-20">
             <div class="text-center">
                 <p class="text-text-muted mb-4">
-                    Designed & built with <span class="text-red-500">❤️</span> by Abhishek Gupta · 2025
+                    Designed & built with <i class="fa-solid fa-heart text-red-500 mx-1"></i> by <a href="https://ragspro.com" target="_blank" class="text-violet-400 hover:text-cyan-400 transition-colors font-bold">RAGSPRO</a> · 2025
                 </p>
                 <div class="flex justify-center gap-6">
-                    <a href="https://github.com/abhishek-ugo" target="_blank" class="text-text-muted hover:text-white transition-colors">
+                    <a href="https://github.com/abhi311098" target="_blank" class="text-text-muted hover:text-white transition-colors">
                         <i class="fab fa-github text-xl"></i>
                     </a>
-                    <a href="https://linkedin.com/in/abhishek-ugo" target="_blank" class="text-text-muted hover:text-white transition-colors">
+                    <a href="https://linkedin.com/in/abhishek-gupta-2515ab157" target="_blank" class="text-text-muted hover:text-white transition-colors">
                         <i class="fab fa-linkedin text-xl"></i>
                     </a>
                 </div>
-                <p class="text-text-muted/50 text-sm mt-6">Made in Flutter spirit 🐦</p>
+                <p class="text-text-muted/50 text-sm mt-6">Made in Flutter spirit <i class="fa-brands fa-flutter text-cyan-400 ml-1"></i></p>
             </div>
         </div>
     </footer>
@@ -1270,6 +1410,28 @@
     <script>
         // GSAP ScrollTrigger Registration
         gsap.registerPlugin(ScrollTrigger);
+
+        // Initialize Lenis
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        // Sync Lenis with GSAP ScrollTrigger
+        lenis.on('scroll', ScrollTrigger.update);
+
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+
+        gsap.ticker.lagSmoothing(0);
 
         // Page Loader
         window.addEventListener('load', () => {
@@ -1446,20 +1608,39 @@
         function initAnimations() {
             // Hero Elements Stagger
             gsap.from('.hero-element', {
-                y: 50,
+                y: 30,
                 opacity: 0,
+                scale: 0.98,
                 duration: 0.8,
-                stagger: 0.15,
+                stagger: 0.1,
                 ease: 'power3.out'
             });
 
-            // Phone Mockup Animation
-            gsap.from('.phone-mockup', {
+            // Phone Mockup 3D Parallax Animation
+            gsap.fromTo('.parallax-phone', 
+                { rotateX: 15, rotateY: -15, scale: 0.9 },
+                {
+                    rotateX: -5, rotateY: 5, scale: 1,
+                    scrollTrigger: {
+                        trigger: '.parallax-phone',
+                        start: 'top 80%',
+                        end: 'bottom 20%',
+                        scrub: 1.5,
+                        toggleActions: 'play none none reverse'
+                    },
+                    ease: 'none'
+                }
+            );
+
+            // Floating Icons Entrance
+            gsap.from('.floating-icon', {
                 rotateY: 90,
+                scale: 0,
                 opacity: 0,
-                duration: 1.2,
+                duration: 1.5,
                 delay: 0.5,
-                ease: 'power3.out'
+                stagger: 0.2,
+                ease: 'back.out(1.5)'
             });
 
             // Section Headings
@@ -1470,12 +1651,12 @@
                     gsap.from(heading, {
                         scrollTrigger: {
                             trigger: heading,
-                            start: 'top 80%',
-                            toggleActions: 'play none none reverse'
+                            start: 'top 95%',
+                            toggleActions: 'play none none none'
                         },
-                        y: 40,
+                        y: 30,
                         opacity: 0,
-                        duration: 0.8,
+                        duration: 0.6,
                         ease: 'power3.out'
                     });
                 }
@@ -1487,13 +1668,14 @@
                 gsap.from(card, {
                     scrollTrigger: {
                         trigger: card,
-                        start: 'top 85%',
-                        toggleActions: 'play none none reverse'
+                        start: 'top 95%',
+                        toggleActions: 'play none none none'
                     },
-                    y: 50,
+                    y: 40,
                     opacity: 0,
+                    scale: 0.98,
                     duration: 0.6,
-                    delay: i * 0.1,
+                    delay: (i % 3) * 0.1,
                     ease: 'power3.out'
                 });
             });
@@ -1520,29 +1702,31 @@
             // Timeline Items
             const timelineItems = document.querySelectorAll('.timeline-item');
             timelineItems.forEach((item, i) => {
+                const isLeft = i % 2 === 0;
                 gsap.from(item, {
                     scrollTrigger: {
                         trigger: item,
-                        start: 'top 80%',
-                        toggleActions: 'play none none reverse'
+                        start: 'top 95%',
+                        toggleActions: 'play none none none'
                     },
-                    x: i % 2 === 0 ? -50 : 50,
+                    x: isLeft ? -40 : 40,
                     opacity: 0,
-                    duration: 0.8,
+                    duration: 0.7,
                     ease: 'power3.out'
                 });
             });
 
-            // Skill Tags Wave Animation
-            const skillTags = document.querySelectorAll('.skill-tag');
+            // Skill Tags & Tech Logo Wave Animation
+            const skillTags = document.querySelectorAll('.skill-tag, .tech-logo');
             gsap.from(skillTags, {
                 scrollTrigger: {
                     trigger: '#skills',
-                    start: 'top 70%'
+                    start: 'top 90%',
+                    toggleActions: 'play none none none'
                 },
-                y: 30,
+                y: 20,
                 opacity: 0,
-                duration: 0.5,
+                duration: 0.4,
                 stagger: 0.05,
                 ease: 'power3.out'
             });
