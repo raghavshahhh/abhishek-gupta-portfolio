@@ -87,6 +87,40 @@
             box-sizing: border-box;
         }
 
+        /* Skeleton Shimmering Effect */
+        .skeleton-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            padding: 2rem;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        .skeleton-item {
+            background: linear-gradient(90deg, #16161D 25%, #1D1D26 50%, #16161D 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+            border-radius: 0.75rem;
+        }
+
+        @keyframes shimmer {
+            from { background-position: -200% 0; }
+            to { background-position: 200% 0; }
+        }
+
+        .skeleton-hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
         /* Lenis handles smooth scrolling, removed native behavior */
 
         html.lenis {
@@ -1646,19 +1680,17 @@
 
         // Initialize GSAP Animations
         function initAnimations() {
-            // Hero Elements Stagger
-            gsap.from('.hero-element', {
-                y: 30,
-                opacity: 0,
-                scale: 0.98,
-                duration: 0.8,
-                stagger: 0.1,
-                ease: 'power3.out'
+            // Immediate Visibility (Removed entrance blurs/offsets for 2s load feel)
+            gsap.set('.hero-element, .glass-card, .timeline-item, h2', { 
+                opacity: 1, 
+                y: 0, 
+                scale: 1,
+                filter: 'none'
             });
 
-            // Phone Mockup 3D Parallax Animation
+            // Continuous Animations (Continuous 3D tilt doesn't affect load speed)
             gsap.fromTo('.parallax-phone', 
-                { rotateX: 15, rotateY: -15, scale: 0.9 },
+                { rotateX: 15, rotateY: -15, scale: 1 },
                 {
                     rotateX: -5, rotateY: 5, scale: 1,
                     scrollTrigger: {
@@ -1683,44 +1715,10 @@
                 ease: 'back.out(1.5)'
             });
 
-            // Section Headings
-            const sections = document.querySelectorAll('section');
-            sections.forEach(section => {
-                const heading = section.querySelector('h2');
-                if (heading) {
-                    gsap.from(heading, {
-                        scrollTrigger: {
-                            trigger: heading,
-                            start: 'top 95%',
-                            toggleActions: 'play none none none'
-                        },
-                        y: 30,
-                        opacity: 0,
-                        duration: 0.6,
-                        ease: 'power3.out'
-                    });
-                }
-            });
+            // Section Headings (Immediate reveal)
+            // No entrance offset used here to ensure instant feel.
 
-            // Glass Cards
-            const cards = document.querySelectorAll('.glass-card');
-            cards.forEach((card, i) => {
-                gsap.from(card, {
-                    scrollTrigger: {
-                        trigger: card,
-                        start: 'top 95%',
-                        toggleActions: 'play none none none'
-                    },
-                    y: 40,
-                    opacity: 0,
-                    scale: 0.98,
-                    duration: 0.6,
-                    delay: (i % 3) * 0.1,
-                    ease: 'power3.out'
-                });
-            });
-
-            // Timeline Path Animation
+            // Timeline Path Animation (Keep for scroll effect)
             const timelinePath = document.getElementById('timelinePath');
             if (timelinePath) {
                 const pathLength = timelinePath.getTotalLength();
@@ -1739,36 +1737,15 @@
                 });
             }
 
-            // Timeline Items
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            timelineItems.forEach((item, i) => {
-                const isLeft = i % 2 === 0;
-                gsap.from(item, {
-                    scrollTrigger: {
-                        trigger: item,
-                        start: 'top 95%',
-                        toggleActions: 'play none none none'
-                    },
-                    x: isLeft ? -40 : 40,
-                    opacity: 0,
-                    duration: 0.7,
-                    ease: 'power3.out'
-                });
-            });
+            // Timeline Items & Skills (Set to visible immediately)
+            // Animations removed to prioritize 2s perceived load time.
 
-            // Skill Tags & Tech Logo Wave Animation
-            const skillTags = document.querySelectorAll('.skill-tag, .tech-logo');
-            gsap.from(skillTags, {
-                scrollTrigger: {
-                    trigger: '#skills',
-                    start: 'top 90%',
-                    toggleActions: 'play none none none'
-                },
-                y: 20,
-                opacity: 0,
-                duration: 0.4,
-                stagger: 0.05,
-                ease: 'power3.out'
+            // Skeleton Hide Logic
+            window.addEventListener('load', () => {
+                const skeleton = document.getElementById('skeleton-overlay');
+                setTimeout(() => {
+                    skeleton.classList.add('skeleton-hide');
+                }, 800); // Small 800ms shimmer for "premium" load feel
             });
         }
 
