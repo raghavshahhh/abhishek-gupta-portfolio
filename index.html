@@ -1680,17 +1680,19 @@
 
         // Initialize GSAP Animations
         function initAnimations() {
-            // Immediate Visibility (Removed entrance blurs/offsets for 2s load feel)
-            gsap.set('.hero-element, .glass-card, .timeline-item, h2', { 
-                opacity: 1, 
-                y: 0, 
-                scale: 1,
-                filter: 'none'
+            // Hero Elements Stagger (Restored but faster)
+            gsap.from('.hero-element', {
+                y: 20,
+                opacity: 0,
+                scale: 0.98,
+                duration: 0.6,
+                stagger: 0.1,
+                ease: 'power3.out'
             });
 
-            // Continuous Animations (Continuous 3D tilt doesn't affect load speed)
+            // Phone Mockup 3D Parallax Animation
             gsap.fromTo('.parallax-phone', 
-                { rotateX: 15, rotateY: -15, scale: 1 },
+                { rotateX: 15, rotateY: -15, scale: 0.95 },
                 {
                     rotateX: -5, rotateY: 5, scale: 1,
                     scrollTrigger: {
@@ -1709,14 +1711,48 @@
                 rotateY: 90,
                 scale: 0,
                 opacity: 0,
-                duration: 1.5,
+                duration: 1.2,
                 delay: 0.5,
-                stagger: 0.2,
+                stagger: 0.15,
                 ease: 'back.out(1.5)'
             });
 
-            // Section Headings (Immediate reveal)
-            // No entrance offset used here to ensure instant feel.
+            // Section Headings (Restored Scroll Reveal)
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                const heading = section.querySelector('h2');
+                if (heading) {
+                    gsap.from(heading, {
+                        scrollTrigger: {
+                            trigger: heading,
+                            start: 'top 95%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 20,
+                        opacity: 0,
+                        duration: 0.5,
+                        ease: 'power3.out'
+                    });
+                }
+            });
+
+            // Glass Cards (Restored Scroll Reveal)
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, i) => {
+                gsap.from(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 95%',
+                        toggleActions: 'play none none none'
+                    },
+                    y: 30,
+                    opacity: 0,
+                    scale: 0.98,
+                    duration: 0.5,
+                    delay: (i % 3) * 0.05,
+                    ease: 'power3.out'
+                });
+            });
 
             // Timeline Path Animation (Keep for scroll effect)
             const timelinePath = document.getElementById('timelinePath');
@@ -1737,8 +1773,36 @@
                 });
             }
 
-            // Timeline Items & Skills (Set to visible immediately)
-            // Animations removed to prioritize 2s perceived load time.
+            // Timeline Items & Skills (Restored Scroll Reveal)
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach((item, i) => {
+                const isLeft = i % 2 === 0;
+                gsap.from(item, {
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 95%',
+                        toggleActions: 'play none none none'
+                    },
+                    x: isLeft ? -30 : 30,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: 'power3.out'
+                });
+            });
+
+            const skillTags = document.querySelectorAll('.skill-tag, .tech-logo');
+            gsap.from(skillTags, {
+                scrollTrigger: {
+                    trigger: '#skills',
+                    start: 'top 90%',
+                    toggleActions: 'play none none none'
+                },
+                y: 15,
+                opacity: 0,
+                duration: 0.3,
+                stagger: 0.03,
+                ease: 'power3.out'
+            });
 
             // Skeleton Hide Logic
             window.addEventListener('load', () => {
