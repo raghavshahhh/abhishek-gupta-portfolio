@@ -121,6 +121,16 @@
             pointer-events: none;
         }
 
+        @media (max-width: 640px) {
+            .skeleton-loader {
+                padding: 1.5rem;
+                gap: 1.5rem;
+            }
+            .skeleton-loader .py-20 {
+                padding-top: 5rem;
+            }
+        }
+
         /* Lenis handles smooth scrolling, removed native behavior */
 
         html.lenis {
@@ -247,6 +257,17 @@
         @keyframes float {
             0%, 100% { transform: rotateY(-15deg) rotateX(5deg) translateY(0); }
             50% { transform: rotateY(-10deg) rotateX(8deg) translateY(-20px); }
+        }
+
+        @media (max-width: 1024px) {
+            .phone-mockup {
+                width: 240px;
+                height: 480px;
+            }
+            @keyframes float {
+                0%, 100% { transform: rotateY(0deg) rotateX(5deg) translateY(0); }
+                50% { transform: rotateY(0deg) rotateX(8deg) translateY(-15px); }
+            }
         }
 
         .phone-mockup::before {
@@ -765,7 +786,7 @@
 
                         <!-- Name -->
                         <div class="hero-element">
-                            <h1 class="font-heading text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold gradient-text leading-none">
+                            <h1 class="font-heading text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold gradient-text leading-tight">
                                 Abhishek Gupta
                             </h1>
                         </div>
@@ -1395,10 +1416,10 @@
         </section>
 
         <!-- Credibility Bar -->
-        <section class="py-16 relative">
+        <section class="py-12 relative">
             <div class=" px-4 sm:px-6 lg:px-12 xl:px-20">
-                <div class="glass rounded-2xl p-8 md:p-12">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="glass rounded-2xl p-6 md:p-12">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 text-center">
                         <div>
                             <div class="text-3xl md:text-4xl font-heading font-bold gradient-text">5</div>
                             <div class="text-text-muted text-sm mt-2">Play Store Apps</div>
@@ -1614,9 +1635,12 @@
             }
         }
 
-        for (let i = 0; i < 50; i++) {
-            particles.push(new Particle());
-        }
+            const isMobile = window.innerWidth < 768;
+            const particleCount = isMobile ? 30 : 80;
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
 
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
