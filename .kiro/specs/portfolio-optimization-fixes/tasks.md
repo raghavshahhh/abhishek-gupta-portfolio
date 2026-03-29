@@ -1,0 +1,186 @@
+# Implementation Plan
+
+- [ ] 1. Write bug condition exploration test
+  - **Property 1: Bug Condition** - Structural and Performance Issues Detection
+  - **CRITICAL**: This test MUST FAIL on unfixed code - failure confirms the bug exists
+  - **DO NOT attempt to fix the test or the code when it fails**
+  - **NOTE**: This test encodes the expected behavior - it will validate the fix when it passes after implementation
+  - **GOAL**: Surface counterexamples that demonstrate the bugs exist
+  - **Scoped PBT Approach**: For deterministic bugs, scope the property to the concrete failing cases to ensure reproducibility
+  - Test for empty directories in `src/` (app/sections, components/layout, components/sections, lib/db, lib/validations)
+  - Test for duplicate CV files (both `Abhishek Gupta CV.pdf` and `Abhishek_Gupta_CV.pdf` exist)
+  - Test that index.html contains inline CSS (900+ lines in `<style>` tag)
+  - Test that index.html contains inline JavaScript (400+ lines in `<script>` tag)
+  - Test that index.html is monolithic (1,957+ total lines)
+  - Test that CDN libraries lack resource hints (no preconnect/dns-prefetch)
+  - Test that interactive elements lack ARIA labels (navigation links, buttons, project cards)
+  - Test that sitemap.xml contains future date (2026-03-27)
+  - Test that meta tags are missing (theme-color, canonical URL)
+  - Run test on UNFIXED code
+  - **EXPECTED OUTCOME**: Test FAILS (this is correct - it proves the bugs exist)
+  - Document counterexamples found to understand root cause
+  - Mark task complete when test is written, run, and failure is documented
+  - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11_
+
+- [ ] 2. Write preservation property tests (BEFORE implementing fix)
+  - **Property 2: Preservation** - Visual and Interactive Behavior
+  - **IMPORTANT**: Follow observation-first methodology
+  - Observe behavior on UNFIXED code for non-buggy aspects (visual design, animations, interactions)
+  - Capture screenshots of all sections (hero, about, experience, projects, skills, contact) on desktop and mobile
+  - Record GSAP animations, scroll triggers, counter animations, timeline path drawing behavior
+  - Test all interactive elements (navigation clicks, project links, download button, hovers, mobile menu)
+  - Test responsive layouts at all breakpoints (mobile, tablet, desktop)
+  - Test that all visual design elements render correctly (colors, gradients, glass effects)
+  - Test that GSAP animations, ScrollTrigger, and Lenis smooth scrolling work identically
+  - Test that 3D phone mockup with floating icons displays correctly
+  - Test that hover effects, counter animations, timeline animations, particle effects work
+  - Test that custom cursor displays on desktop with hover scale effects
+  - Test that external links open in new tabs correctly
+  - Test that download resume button downloads CV file correctly
+  - Write property-based tests capturing observed behavior patterns from Preservation Requirements
+  - Property-based testing generates many test cases for stronger guarantees
+  - Run tests on UNFIXED code
+  - **EXPECTED OUTCOME**: Tests PASS (this confirms baseline behavior to preserve)
+  - Mark task complete when tests are written, run, and passing on unfixed code
+  - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.12_
+
+- [ ] 3. Fix for portfolio optimization issues
+
+  - [ ] 3.1 Clean up file structure
+    - Remove empty `src/` directory and all nested folders (app/sections, components/layout, components/sections, lib/db, lib/validations)
+    - Verify no files exist in these directories before deletion
+    - Remove duplicate CV file `Abhishek Gupta CV.pdf`, keep only `Abhishek_Gupta_CV.pdf`
+    - Verify download link in index.html points to `Abhishek_Gupta_CV.pdf`
+    - _Bug_Condition: hasEmptyDirectories(codebase.src) OR hasDuplicateFiles(codebase.cvFiles)_
+    - _Expected_Behavior: hasCleanStructure(fixedCodebase) with no empty directories and single CV file_
+    - _Preservation: All visual design, animations, and interactions remain unchanged_
+    - _Requirements: 1.1, 1.2, 2.1, 2.2_
+
+  - [ ] 3.2 Extract CSS to external file
+    - Create `styles.css` file
+    - Move all 900+ lines from `<style>` tag in index.html to styles.css
+    - Preserve all CSS rules exactly as written
+    - Add `<link rel="stylesheet" href="styles.css">` in `<head>` of index.html
+    - Remove `<style>` tag from index.html
+    - _Bug_Condition: hasInlineCSS(codebase.html, threshold=900)_
+    - _Expected_Behavior: hasExternalCSS(fixedCodebase) with styles.css containing all original rules_
+    - _Preservation: All visual design elements display exactly as before_
+    - _Requirements: 1.4, 2.4, 3.1_
+
+  - [ ] 3.3 Extract JavaScript to external file
+    - Create `script.js` file
+    - Move all 400+ lines from `<script>` tag in index.html to script.js
+    - Preserve all JavaScript logic exactly as written
+    - Add `<script src="script.js" defer></script>` before `</body>` in index.html
+    - Remove inline `<script>` tag from index.html
+    - _Bug_Condition: hasInlineJS(codebase.html, threshold=400)_
+    - _Expected_Behavior: hasExternalJS(fixedCodebase) with script.js containing all original logic_
+    - _Preservation: All animations, interactions, and JavaScript behaviors work identically_
+    - _Requirements: 1.5, 2.5, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 3.10_
+
+  - [ ] 3.4 Add resource hints for CDN libraries
+    - Add preconnect hints in `<head>` of index.html:
+      - `<link rel="preconnect" href="https://cdn.tailwindcss.com">`
+      - `<link rel="preconnect" href="https://cdnjs.cloudflare.com">`
+      - `<link rel="preconnect" href="https://unpkg.com">`
+      - `<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">`
+    - Place hints before CDN script/link tags
+    - _Bug_Condition: lacksResourceHints(codebase.cdnLibraries)_
+    - _Expected_Behavior: hasResourceHints(fixedCodebase.cdnLibraries) for optimized loading_
+    - _Preservation: All CDN libraries load and function identically_
+    - _Requirements: 1.3, 2.3, 2.7_
+
+  - [ ] 3.5 Add ARIA labels to interactive elements
+    - Add aria-label to navigation links: `<a href="#about" aria-label="Navigate to About section">About</a>`
+    - Add aria-label to project cards describing each app (e.g., "IGL Connect - Government gas utility app with 1M+ downloads")
+    - Add aria-label to social links: `<a href="https://github.com/abhi311098" target="_blank" aria-label="Visit Abhishek's GitHub profile">`
+    - Add aria-label to buttons: `<button id="menuBtn" aria-label="Open mobile navigation menu">`
+    - Add aria-label to download button: `<a href="Abhishek_Gupta_CV.pdf" download aria-label="Download Abhishek Gupta's resume PDF">`
+    - _Bug_Condition: missingARIALabels(codebase.interactiveElements)_
+    - _Expected_Behavior: hasARIALabels(fixedCodebase.interactiveElements) on all interactive elements_
+    - _Preservation: All interactive behaviors and visual elements remain unchanged_
+    - _Requirements: 1.9, 2.9_
+
+  - [ ] 3.6 Add accessibility option for custom cursor
+    - Modify cursor JavaScript in script.js to detect prefers-reduced-motion
+    - Add check: `const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;`
+    - Disable custom cursor if reduced motion is preferred or on touch devices
+    - Add CSS in styles.css: `@media (prefers-reduced-motion: reduce) { .cursor, .cursor-dot { display: none !important; } }`
+    - _Bug_Condition: customCursorInterferes(codebase.cursor)_
+    - _Expected_Behavior: Custom cursor disabled for assistive technology users_
+    - _Preservation: Custom cursor continues to work on desktop when not disabled_
+    - _Requirements: 1.8, 2.8, 3.10_
+
+  - [ ] 3.7 Fix sitemap.xml date
+    - Change `<lastmod>2026-03-27</lastmod>` to current date (e.g., `<lastmod>2025-01-15</lastmod>`)
+    - _Bug_Condition: incorrectSitemapDate(codebase.sitemap)_
+    - _Expected_Behavior: hasCorrectSitemapDate(fixedCodebase.sitemap) with current/past date_
+    - _Preservation: No impact on user-facing functionality_
+    - _Requirements: 1.10, 2.10_
+
+  - [ ] 3.8 Add SEO meta tags
+    - Add theme-color meta tag: `<meta name="theme-color" content="#030305">` (matches --bg-primary)
+    - Add canonical URL: `<link rel="canonical" href="https://ragspro.com">`
+    - Verify og:image points to valid, accessible image URL
+    - _Bug_Condition: missingMetaTags(codebase.seo)_
+    - _Expected_Behavior: hasCompleteSEOMetaTags(fixedCodebase.seo) with all required tags_
+    - _Preservation: No impact on user-facing functionality_
+    - _Requirements: 1.11, 2.11_
+
+  - [ ] 3.9 Update portfolio content with accurate statistics
+    - Update Stats Bar section:
+      - Change "Apps Shipped" from 10 to 15+
+      - Change "Total Downloads" from 1M+ to 2M+ (2,000,000+)
+      - Update data-target attribute for downloads stat card to 2000000
+    - Update Architecture & State section (currently blank):
+      - Add skill tags for state management: BLoC, GetX, Provider, Riverpod
+      - Add skill tags for architecture: Clean Architecture, MVVM, Repository Pattern, Dependency Injection
+    - Update Projects section "5+ More Apps" card:
+      - Change heading to "15+ More Apps"
+      - Update description to: "15+ apps live on Play Store and 15+ apps on App Store with thousands of active users across fitness, productivity, and utility categories."
+    - Update Credibility Bar section:
+      - Change "5 Play Store Apps" to "15 Play Store Apps"
+      - Change "5 App Store Apps" to "15 App Store Apps"
+      - Change "5 Companies" to "3 Companies"
+      - Keep "5+ Years Experience" as is
+    - _Preservation: All visual design, animations, and layout remain unchanged_
+    - _Requirements: Content accuracy update_
+
+  - [ ] 3.10 Verify bug condition exploration test now passes
+    - **Property 1: Expected Behavior** - Structural and Performance Optimization
+    - **IMPORTANT**: Re-run the SAME test from task 1 - do NOT write a new test
+    - The test from task 1 encodes the expected behavior
+    - When this test passes, it confirms the expected behavior is satisfied
+    - Run bug condition exploration test from step 1
+    - Verify empty directories are removed
+    - Verify only one CV file exists (`Abhishek_Gupta_CV.pdf`)
+    - Verify index.html has external CSS link (no inline `<style>` tag with 900+ lines)
+    - Verify index.html has external JS link (no inline `<script>` tag with 400+ lines)
+    - Verify index.html is under 500 lines
+    - Verify CDN libraries have resource hints (preconnect/dns-prefetch)
+    - Verify interactive elements have ARIA labels
+    - Verify sitemap.xml has current/past date
+    - Verify meta tags are present (theme-color, canonical URL)
+    - **EXPECTED OUTCOME**: Test PASSES (confirms bugs are fixed)
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11_
+
+  - [ ] 3.11 Verify preservation tests still pass
+    - **Property 2: Preservation** - Visual and Interactive Behavior
+    - **IMPORTANT**: Re-run the SAME tests from task 2 - do NOT write new tests
+    - Run preservation property tests from step 2
+    - Compare screenshots of all sections (hero, about, experience, projects, skills, contact) - verify pixel-perfect match
+    - Verify GSAP animations, scroll triggers, counter animations, timeline path drawing work identically
+    - Verify all interactive elements work (navigation, project links, download button, hovers, mobile menu)
+    - Verify responsive layouts at all breakpoints match original
+    - Verify all visual design elements render identically (colors, gradients, glass effects)
+    - Verify 3D phone mockup with floating icons displays correctly
+    - Verify hover effects, particle effects work identically
+    - Verify custom cursor displays on desktop (when not disabled for accessibility)
+    - Verify external links open in new tabs correctly
+    - Verify download resume button downloads CV file correctly
+    - **EXPECTED OUTCOME**: Tests PASS (confirms no regressions)
+    - Confirm all tests still pass after fix (no regressions)
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10, 3.11, 3.12_
+
+- [ ] 4. Checkpoint - Ensure all tests pass
+  - Ensure all tests pass, ask the user if questions arise.
